@@ -42,6 +42,7 @@ namespace GridCollisionDemo
             this.Text = "Grid Collision Demo";
             this.Load += new System.EventHandler(this.DemoForm_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.DemoForm_Paint);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DemoForm_KeyDown);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.DemoForm_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.DemoForm_MouseMove);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.DemoForm_MouseUp);

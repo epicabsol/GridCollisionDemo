@@ -37,6 +37,7 @@ namespace GridCollisionDemo
         private Grid Grid;
         private DragMode CurrentDragMode = DragMode.None;
         private Point LastCursorPosition;
+        private bool UseBox = true;
 
         public DemoForm()
         {
@@ -60,7 +61,10 @@ namespace GridCollisionDemo
 
         private void UpdateResults()
         {
-            if (this.Grid.TestSegment(this.StartPosition.X, this.StartPosition.Y, this.DestinationPosition.X, this.DestinationPosition.Y, out float hitX, out float hitY))
+            float hitX;
+            float hitY;
+            bool hit = UseBox ? this.Grid.SweepBox(this.StartPosition.X, this.StartPosition.Y, this.DestinationPosition.X, this.DestinationPosition.Y, ObjectSize.Width, ObjectSize.Height, out hitX, out hitY) : this.Grid.TestSegment(this.StartPosition.X, this.StartPosition.Y, this.DestinationPosition.X, this.DestinationPosition.Y, out hitX, out hitY);
+            if (hit)
             {
                 this.EndPosition.X = hitX;
                 this.EndPosition.Y = hitY;
@@ -119,6 +123,12 @@ namespace GridCollisionDemo
             e.Graphics.DrawEllipse(StartPen, StartPosition.X * ViewScale - PointSize, StartPosition.Y * ViewScale - PointSize, PointSize * 2.0f, PointSize * 2.0f);
             e.Graphics.DrawEllipse(DestinationPen, DestinationPosition.X * ViewScale - PointSize, DestinationPosition.Y * ViewScale - PointSize, PointSize * 2.0f, PointSize * 2.0f);
             e.Graphics.DrawEllipse(EndPen, EndPosition.X * ViewScale - PointSize, EndPosition.Y * ViewScale - PointSize, PointSize * 2.0f, PointSize * 2.0f);
+
+            if (this.UseBox)
+            {
+                e.Graphics.DrawRectangle(StartPen, (StartPosition.X - ObjectSize.Width * 0.5f) * ViewScale, (StartPosition.Y - ObjectSize.Height * 0.5f) * ViewScale, ObjectSize.Width * ViewScale, ObjectSize.Height * ViewScale);
+                e.Graphics.DrawRectangle(EndPen, (EndPosition.X - ObjectSize.Width * 0.5f) * ViewScale, (EndPosition.Y - ObjectSize.Height * 0.5f) * ViewScale, ObjectSize.Width * ViewScale, ObjectSize.Height * ViewScale);
+            }
         }
 
         private void DemoForm_Resize(object sender, EventArgs e)
@@ -202,6 +212,15 @@ namespace GridCollisionDemo
             this.CurrentDragMode = DragMode.None;
 
             LastCursorPosition = e.Location;
+        }
+
+        private void DemoForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Space)
+            {
+                this.UseBox = !this.UseBox;
+                this.UpdateResults();
+            }
         }
     }
 }
